@@ -2,13 +2,23 @@
     <div class="container-fluid" id="login">
         <div class="main">
             <input type="checkbox" id="chk" aria-hidden="true">
-
+            <div class="close">
+                <router-link to="/">
+                    <span class="material-symbols-outlined">
+                        arrow_back
+                    </span>
+                </router-link>
+                
+            </div>
             <div class="signup">
                 <form>
                     <label for="chk" aria-hidden="true">Sign up</label>
-                    <input type="text" name="txt" placeholder="User name" required="true" v-model="username" @input="formValiditySign">
-                    <input type="email" name="email" placeholder="Email" required="true" v-model="emailSignup" @input="formValiditySign">
-                    <input type="password" name="pswd" placeholder="Password" required="true" v-model="password" @input="formValiditySign">
+                    <input type="text" name="txt" placeholder="User name" required="true" v-model="username"
+                        @input="formValiditySign">
+                    <input type="email" name="email" placeholder="Email" required="true" v-model="emailSignup"
+                        @input="formValiditySign">
+                    <input type="password" name="pswd" placeholder="Password" required="true" v-model="password"
+                        @input="formValiditySign">
                     <button :disabled="!isValidFormS" @click.prevent="signup">Sign up</button>
                 </form>
             </div>
@@ -16,10 +26,13 @@
             <div class="login">
                 <form>
                     <label for="chk" aria-hidden="true">Login</label>
-                    <input type="email" name="email" placeholder="Email" required="true" v-model="emailLogin" @input="formValidity">
-                    <input type="password" name="pswd" placeholder="Password" required="true" v-model="password" @input="formValidity">
+                    <input type="email" name="email" placeholder="Email" required="true" v-model="emailLogin"
+                        @input="formValidity">
+                    <input type="password" name="pswd" placeholder="Password" required="true" v-model="password"
+                        @input="formValidity">
                     <button @click.prevent="login" :disabled="!isValidFormL">Login</button>
                 </form>
+
             </div>
         </div>
     </div>
@@ -37,35 +50,35 @@ export default {
             isValidFormL: false,
             isValidFormS: false,
             instance: null,
-            API_LOGIN: 'http://localhost:3000/api/v1/blog/login',
-            API_SIGNUP: 'http://localhost:3000/api/v1/blog/register'
+            rute: ''
         }
     },
     methods: {
         login: async function () {
             try {
-                const result = await this.axios.post(this.API_LOGIN, { email: this.emailLogin, password: this.password }, {withCredentials: true})
+                const result = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/login`, { email: this.emailLogin, password: this.password }, { withCredentials: true })
                 if (result.status == 200) {
-                    this.instance = this.$toast.success(result.data.message, {position: 'top', duration: 300})
+
+                    this.rute = result.data.extra ? 'Dashboard' : 'Main'
+
+
+                    this.instance = this.$toast.success(result.data.message, { position: 'top', duration: 300 })
                     setTimeout(() => {
-                        this.$router.push({name: 'Main'})
+                        this.$router.push({ name: this.rute })
                     }, 400)
                 }
             } catch (error) {
-                this.instance = this.$toast.error(error.response.data.message, {position: 'top', duration: 1500})
+                this.instance = this.$toast.error(error.response.data.message, { position: 'top', duration: 1500 })
             }
         },
         signup: async function () {
             try {
-                const result = await this.axios.post(this.API_SIGNUP, { name: this.username, email: this.emailSignup, password: this.password })
+                const result = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/register`, { name: this.username, email: this.emailSignup, password: this.password })
                 if (result.status == 200) {
-                    this.instance = this.$toast.success(result.data.message, {position: 'top', duration: 300})
-                    setTimeout(()=> {
-                        this.$router.push({name: 'Main'})
-                    }, 400)
+                    this.instance = this.$toast.success(result.data.message, { position: 'top', duration: 300 })
                 }
             } catch (error) {
-                this.instance = this.$toast.error(error.response.data.message, {position: 'top', duration: 1500})
+                this.instance = this.$toast.error(error.response.data.message, { position: 'top', duration: 1500 })
             }
         },
         formValidity: function () {
@@ -77,7 +90,7 @@ export default {
             // Actualizar el estado de la validez del formulario
             this.isValidFormL = emailValid && passwordValid;
         },
-        formValiditySign: function() {
+        formValiditySign: function () {
             const emailValid = this.emailSignup !== '' && /\S+@\S+\.\S+/.test(this.emailSignup);
 
             // Verificar si el campo de contraseña está lleno
@@ -99,9 +112,17 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 5rem);
+    min-height: 100vh;
     font-family: 'Jost', sans-serif;
     background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+}
+
+.close {
+    position: relative;
+    font-size: 30px;
+    left: 10px;
+    cursor: pointer;
+    z-index: 10;
 }
 
 .main {

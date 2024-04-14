@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const auth = require('../middleware/auth.js')
 
@@ -11,31 +11,65 @@ const routes = [
     {
         path: '/auth',
         name: 'Login',
-        meta: {requireAuth: true},
         component: () => import('../components/common/LoginApp.vue')
     },
     {
         path: '/main',
         name: 'Main',
-        meta: {requireAuth: true},
+        meta: { requireAuth: true },
         component: () => import('../components/blog/MainBlog.vue')
+    },
+    {
+        path: '/dashboard',
+        name: 'Dashboard',
+        meta: { requireAdmin: true },
+        component: () => import('../components/private/AdminDashboard.vue'),
+        children: [
+            {
+                path: 'posts',
+                name: 'Posts',
+                meta: { requireAdmin: true },
+                component: () => import('../components/private/AdminPosts.vue'),
+                props: true
+            },
+            {
+                path: 'analisis',
+                name: 'Analisis',
+                meta: { requireAdmin: true },
+                component: () => import('../components/private/AdminAnalits.vue'),
+                props: true
+            }
+        ]
     }
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+    if (to.meta.requireAdmin) {
+        const token = auth.getTokenFromCookie();
+        if(!await auth.isAdmin(token)){
+            next({ name: 'Login' });
+            return;
+        }
+    }
 
-    if(to.meta.requireAuth && !auth.isAuthenticated(auth.getTokenFromCookie())){
-        next({name: 'Login'})
+    if (to.meta.requireAuth) {
+        const token = auth.getTokenFromCookie();
+        if (!await auth.isAuthenticated(token)) {
+            next({ name: 'Login' });
+            return;
+        }
     }
-    else{
-        next()
-    }
-})
+
+    next(); // Llamamos a next() aquí para permitir la navegación cuando sea adecuado
+});
+
+
+
 
 export {
     router

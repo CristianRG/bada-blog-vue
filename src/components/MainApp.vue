@@ -1,18 +1,22 @@
 <template>
-    <div class="container-fluid" id="main">
-        <div class="drop-shadow">
-            <GetStarted />
+    <div>
+        <NavBar />
+        <div class="container-fluid" id="main">
+            <div class="drop-shadow">
+                <GetStarted />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import GetStarted from './GetStarted.vue';
-
+    import NavBar from './navbar/NavBar.vue';
     export default {
         name: 'MainApp',
         components: {
-            GetStarted
+            GetStarted,
+            NavBar
         }
     }
 </script>

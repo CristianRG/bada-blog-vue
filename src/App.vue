@@ -1,32 +1,26 @@
 <template>
   <div id="app">
-    <NavBar/>
-    <transition>
-      <router-view  class="animate__animated animate__fadeInRight"/>
-    </transition>
+    <router-view />
   </div>
-  
+
 </template>
 
 <script>
 //import HelloWorld from './components/HelloWorld.vue'
-import NavBar from './components/navbar/NavBar.vue'
 //import MainApp from './components/MainApp.vue'
 
 export default {
-  name: 'App',
-  components: {
-    NavBar
-  }
+  name: 'App'
 }
 </script>
 
 <style>
-  #app{
-    overflow: hidden;
-  }
-  :root {
+#app {
+  overflow: hidden;
+}
+
+:root {
   --animate-duration: 800ms;
   --animate-delay: 0.2s;
-  }
+}
 </style>
