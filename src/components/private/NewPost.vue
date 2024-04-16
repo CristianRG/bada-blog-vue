@@ -31,21 +31,21 @@ export default {
             post: {
                 title: '',
                 content: '',
-                media: [] // Cambiamos media a un array para almacenar múltiples archivos
+                media: [], // Cambiamos media a un array para almacenar múltiples archivos
+                mediaBase64: []
             },
-            instance: null,
-            API_URL_SUBMIT: 'http://localhost:3000/api/v1/blog/create'
+            instance: null
         };
     },
     methods: {
         async submitPost() {
             // Aquí puedes enviar la publicación al servidor
             try {
-                const response = await this.axios.post(this.API_URL_SUBMIT, { title: this.post.title, content: this.post.content, media: this.post.media }, { withCredentials: true })
-                console.log(response)
+                const response = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/create`, { title: this.post.title, content: this.post.content, media: this.post.mediaBase64 }, { withCredentials: true })
                 this.post.title = '';
                 this.post.content = '';
                 this.post.media = [];
+                this.post.mediaBase64 = [];
                 this.$emit('new-post')
                 this.$store.dispatch('addBlogs', {...response.data.data, user: {...response.data.user}})
                 this.instance = this.$toast.success("Blog created!")
@@ -68,6 +68,7 @@ export default {
                 const reader = new FileReader();
                 reader.onload = () => {
                     // Puedes hacer algo con la URL de la imagen si lo deseas
+                    this.post.mediaBase64.push(reader.result.split(',')[1]);
                 };
                 reader.readAsDataURL(file);
             }

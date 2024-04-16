@@ -39,11 +39,34 @@
                     <p>Palabras más repetidas en comentarios</p>
                     <!-- Lista de comentarios -->
                     <ul class="list-group" ref="commentsList">
-                        <li class="list-group-item comment" v-for="comment in commentsData" :key="comment.id" style="display: flex; gap: 3rem;">
-                            <span>{{ comment.text }}</span>  <span>{{ comment.count }}</span>
+                        <li class="list-group-item comment" v-for="comment in commentsData" :key="comment.id"
+                            style="display: flex; gap: 3rem;">
+                            <span>{{ comment.text }}</span> <span>{{ comment.count }}</span>
                         </li>
                     </ul>
                 </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h3>Estadisticas detalladas</h3>
+                    <p>Estadisticas de cada blog</p>
+                    <div class="card" v-for="post in listDetailed" :key="post">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">id: {{ post._id }}</p>
+                            <p class="card-text">likes: {{ post.likes }}</p>
+                            <p class="card-text">dislikes: {{ post.dislikes }}</p>
+                            <p class="card-text">comentarios: {{ post.comments }}</p>
+                            <p>Palabras más repetidas en comentarios</p>
+                            <div class="list-group">
+                                <li class="list-group-item" v-for="comment in post.words" :key="comment.id" style="display: flex; gap: 3rem;">
+                                    <span>{{ comment._id }}</span> <span>{{ comment.count }}</span>
+                                </li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -57,7 +80,8 @@ export default {
             likes: 0,
             dislikes: 0,
             comments: 0,
-            commentsData: []
+            commentsData: [],
+            listDetailed: []
         }
     },
     methods: {
@@ -77,20 +101,36 @@ export default {
         const eventSource = new EventSource(`${this.$store.state.URL_BASE}/dashboard/sse`, { withCredentials: true });
 
         eventSource.addEventListener("message", (event) => {
+            //console.log(event.data)
             this.commentsData = [];
+            this.listDetailed = []
+
 
             const newData = JSON.parse(event.data);
-            this.likes = newData.data.totalLikes;
-            this.dislikes = newData.data.totalDislikes;
-            this.comments = newData.data.totalComments;
+            this.likes = newData.data[1].totalLikes;
+            this.dislikes = newData.data[1].totalDislikes;
+            this.comments = newData.data[1].totalComments;
 
-            newData.data.wordInMostComments.forEach(comment => {
+            newData.data[1].wordInMostComments.forEach(comment => {
                 this.commentsData.push({
                     id: comment._id,
                     text: comment._id, // Modifica esto para reflejar el texto real de tu comentario
                     count: comment.count
                 });
             });
+
+            newData.data[0].forEach((blog) => {
+                this.listDetailed.push({
+                    _id: blog._id,
+                    title: blog.title,
+                    likes: blog.totalLikes,
+                    dislikes: blog.totalDislikes,
+                    comments: blog.totalComments,
+                    words: blog.wordInMostComments
+                })
+            })
+
+
         });
 
         eventSource.addEventListener("error", (error) => {
@@ -101,5 +141,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

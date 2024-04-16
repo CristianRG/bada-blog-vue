@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid" id="login">
-        <div class="main">
+        <div class="main" v-if="!showProfilePicker">
             <input type="checkbox" id="chk" aria-hidden="true">
             <div class="close">
                 <router-link to="/">
@@ -19,7 +19,7 @@
                         @input="formValiditySign">
                     <input type="password" name="pswd" placeholder="Password" required="true" v-model="password"
                         @input="formValiditySign">
-                    <button :disabled="!isValidFormS" @click.prevent="signup">Sign up</button>
+                    <button :disabled="!isValidFormS" @click.prevent="nextStep">Sign up</button>
                 </form>
             </div>
 
@@ -35,12 +35,17 @@
 
             </div>
         </div>
+        <ProfilePicture v-if="showProfilePicker" @sign="signup(image)" />
     </div>
 </template>
 
 <script>
+import ProfilePicture from './ProfilePicture.vue'
 export default {
     name: 'LoginApp',
+    components: {
+        ProfilePicture
+    },
     data() {
         return {
             emailLogin: '',
@@ -50,12 +55,14 @@ export default {
             isValidFormL: false,
             isValidFormS: false,
             instance: null,
-            rute: ''
+            rute: '',
+            showProfilePicker: false
         }
     },
     methods: {
         login: async function () {
             try {
+                console.log(result)
                 const result = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/login`, { email: this.emailLogin, password: this.password }, { withCredentials: true })
                 if (result.status == 200) {
 
@@ -71,11 +78,12 @@ export default {
                 this.instance = this.$toast.error(error.response.data.message, { position: 'top', duration: 1500 })
             }
         },
-        signup: async function () {
+        signup: async function (image) {
             try {
-                const result = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/register`, { name: this.username, email: this.emailSignup, password: this.password })
+                const result = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/register`, { name: this.username, email: this.emailSignup, password: this.password, profileImage: image })
                 if (result.status == 200) {
                     this.instance = this.$toast.success(result.data.message, { position: 'top', duration: 300 })
+                    this.nextStep()
                 }
             } catch (error) {
                 this.instance = this.$toast.error(error.response.data.message, { position: 'top', duration: 1500 })
@@ -100,6 +108,9 @@ export default {
 
             // Actualizar el estado de la validez del formulario
             this.isValidFormS = emailValid && passwordValid && usernameValid;
+        },
+        nextStep: function (){
+            this.showProfilePicker =! this.showProfilePicker
         }
     }
 }
