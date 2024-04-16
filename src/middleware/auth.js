@@ -1,29 +1,40 @@
 import axios from 'axios'
-export async function isAuthenticated(token){
-    if(token!=null){
-        const result = await axios.post(`https://soundscape-server.onrender.com/api/v1/blog/auth`, {token: token})
-        
-        return result.status == 200
+
+const API_BASE_URL = 'https://soundscape-server.onrender.com'; // O utiliza config.ORIGIN_URL_SERVER si lo has definido en otro lugar
+
+export async function isAuthenticated(token) {
+    try {
+        if (token) {
+            const result = await axios.post(`${API_BASE_URL}/api/v1/blog/auth`, { token });
+            return result.status === 200;
+        }
+        return false;
+    } catch (error) {
+        console.error('Error en la autenticación:', error);
+        return false;
     }
-    return false
 }
 
-export async function isAdmin(token){
-    if(token!=null){
-        const result = await axios.post(`https://soundscape-server.onrender.com/api/v1/blog/dashboard/auth`, {token: token})
-        
-        return result.status == 200
+export async function isAdmin(token) {
+    try {
+        if (token) {
+            const result = await axios.post(`${API_BASE_URL}/api/v1/blog/dashboard/auth`, { token });
+            return result.status === 200;
+        }
+        return false;
+    } catch (error) {
+        console.error('Error en la verificación de administrador:', error);
+        return false;
     }
-    return false
 }
 
-export function getTokenFromCookie() {
-    const cookies = document.cookie.split(';');
+export function getTokenFromCookie(cookieString) {
+    const cookies = cookieString.split(';');
     for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
         if (cookie.startsWith('token=')) {
             return cookie.substring('token='.length, cookie.length);
         }
     }
-    return null; // Si no se encuentra el token en la cookie
+    return null;
 }
