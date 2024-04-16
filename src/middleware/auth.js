@@ -1,7 +1,7 @@
 import axios from 'axios'
 export async function isAuthenticated(token){
     if(token!=null){
-        const result = await axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/auth`, {token: token})
+        const result = await axios.post(`https://soundscape-server.onrender.com/api/v1/blog/auth`, {token: token})
         
         return result.status == 200
     }
@@ -10,7 +10,7 @@ export async function isAuthenticated(token){
 
 export async function isAdmin(token){
     if(token!=null){
-        const result = await axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/dashboard/auth`, {token: token})
+        const result = await axios.post(`https://soundscape-server.onrender.com/api/v1/blog/dashboard/auth`, {token: token})
         
         return result.status == 200
     }
