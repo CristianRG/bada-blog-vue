@@ -62,8 +62,9 @@ export default {
     methods: {
         login: async function () {
             try {
-                console.log(result)
+                
                 const result = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/login`, { email: this.emailLogin, password: this.password }, { withCredentials: true })
+                console.log(result)
                 if (result.status == 200) {
 
                     this.rute = result.data.extra ? 'Dashboard' : 'Main'
