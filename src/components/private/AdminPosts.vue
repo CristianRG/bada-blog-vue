@@ -1,14 +1,14 @@
 <template>
     <div class="container-fluid" id="main">
-        <ContainerBlogs />
+        <ContainerPosts />
     </div>
 </template>
 <script>
-import ContainerBlogs from '../blog/ContainerBlogs.vue';
+import ContainerPosts from '@/components/blog/ContainerPosts.vue'
     export default {
         name: 'AdminPosts',
         components: {
-            ContainerBlogs
+            ContainerPosts
         }
     }
 </script>

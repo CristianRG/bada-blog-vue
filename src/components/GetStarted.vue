@@ -21,14 +21,21 @@
     }
 </script>
 
-<style>
+<style scoped>
     .get-started{
         color: white;
     }
 
     .buttons{
+        width: 100%;
+        height: fit-content;
         display: flex;
-        justify-content: end;
-        
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .buttons button {
+        margin: 0;
     }
 </style>

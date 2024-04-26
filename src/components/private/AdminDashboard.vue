@@ -1,6 +1,5 @@
 <template>
-    <NavBar :items="items"/>
-    <HomeDashboard v-if="this.$route.name === 'Dashboard'" />    
+    <NavBar :items="items"/>    
     <router-view>
     </router-view>
     <button v-if="showFloatingButton" class="btn btn-primary floating-button" id="floating-button"
@@ -17,13 +16,11 @@
 <script>
 import NavBar from '../navbar/NavBar.vue';
 import NewPost from './NewPost.vue';
-import HomeDashboard from './HomeDashboard.vue';
 export default {
     name: 'AdminDashboard',
     components: {
         NavBar,
-        NewPost,
-        HomeDashboard
+        NewPost
     },
     data() {
         return {
@@ -54,8 +51,10 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
 #floating-button {
+    width: fit-content;
+    height: fit-content;
     position: fixed;
     bottom: 20px;
     right: 20px;

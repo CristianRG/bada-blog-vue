@@ -1,27 +1,60 @@
 <template>
-    <div class="container-fluid" id="mainApp">
+    <meta name="keywords" content="blog, soundscape, posts, principal">
+    <meta name="description" content="¡Bienvenido a nuestro blog oficial! Ven y comparte con nosotros tus gustos musicales">
+    <div class="container-fluid" id="mainApp" v-if="this.$route.name === 'Main'" >
         <div class="side-bar">
             <SideBar />
         </div>
         <div class="content">
-            <ContainerBlogs style="width: 70%;"/>
+            <ContainerPosts style="width: 70%;" @sessionCard="showSessionCard = true"/>
         </div>
+        <SessionCard 
+        v-if="showSessionCard"
+        style="z-index: 100; position: absolute; bottom: 0%; width: auto;" @close="showSessionCard = false"/>
     </div>
+    <router-view></router-view>
 </template>
 
 <script>
 import SideBar from '@/components/blog/SideBar.vue'
-import ContainerBlogs from './ContainerBlogs.vue';
+import ContainerPosts from '@/components/blog/ContainerPosts.vue'
+import { getTokenFromCookie } from '@/middleware/auth';
+import SessionCard from '@/components/common/SessionCard.vue';
 export default {
     name: "MainBlog",
     components: {
         SideBar,
-        ContainerBlogs
+        ContainerPosts,
+        SessionCard
+    },
+    data() {
+        return {
+            isInSession: false,
+            showSessionCard: false
+        }
+    },
+    methods: {
+        async checkSession(){
+            try {
+                const token = getTokenFromCookie()
+                const response = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/auth`, {token})
+                this.isInSession = response.status == 200 ? true : false
+            } catch (error) {
+                this.isInSession = false
+            }
+            return this.isInSession
+        }
+    },
+    mounted() {
+        setTimeout(async() => {
+            await this.checkSession()
+            this.showSessionCard = !this.isInSession
+        }, 2000)
     }
 }
 </script>
 
-<style>
+<style scoped>
     #mainApp {
         display: grid;
         height: 100vh;

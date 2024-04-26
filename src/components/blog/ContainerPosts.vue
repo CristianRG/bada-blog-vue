@@ -1,17 +1,18 @@
 <template>
     <div class="container-fluid" id="container-blogs" ref="container">
-        <BlogCard v-for="post in blogs" :key="post._id" :post="post" :user="post.user"
-            class="animate__animated animate__fadeInRight" />
+        <PostCard v-for="post in blogs" :key="post._id" :post="post" :user="post.user"
+            @sessionCard="this.$emit('sessionCard')"
+            class="animate__animated animate__backInUp"/>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import BlogCard from '../common/BlogCard.vue'
+import PostCard from '@/components/post/PostCard.vue'
 export default {
-    name: 'ContainerBlogs',
+    name: 'ContainerPosts',
     components: {
-        BlogCard
+        PostCard
     },
     computed: {
         ...mapState(['blogs'])
@@ -25,7 +26,7 @@ export default {
     methods: {
         getBlogs: async function () {
             try {
-                let response = await this.axios.get(`${this.$store.state.URL_BASE}/api/v1/blog/list`, { withCredentials: true })
+                let response = await this.axios.get(`${this.$store.state.URL_BASE}/api/v1/blog/list`)
                 this.blogsList = response.data.data
                 await this.loadUsersForBlogs()
             } catch (error) {
@@ -48,7 +49,7 @@ export default {
         },
         getUser: async function (id) {
             try {
-                let response = await this.axios.get(`${this.$store.state.URL_BASE}/api/v1/blog/user/?id=${id}`, { withCredentials: true })
+                let response = await this.axios.get(`${this.$store.state.URL_BASE}/api/v1/blog/user?id=${id}`)
                 return response.data.data
             } catch (error) {
                 this.instance = this.$toast.error("Error to load user...", { duration: 3000 })

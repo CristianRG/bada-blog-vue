@@ -21,7 +21,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     #main{
         width: 100%;
         height: calc(100vh - 5rem);

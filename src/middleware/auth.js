@@ -1,18 +1,25 @@
 import axios from 'axios'
-export async function isAuthenticated(token){
-    if(token!=null){
-        const result = await axios.post(`https://soundscape-server.onrender.com/api/v1/blog/auth`, {token: token})
-        
-        return result.status == 200
+export async function isAuthenticated(token) {
+    if (token != null) {
+        try {
+            const result = await axios.post(`${process.env.VUE_APP_ORIGIN_SERVER}/api/v1/blog/auth`, { token: token })
+
+            return result.status == 200
+        } catch (error) {
+            return false
+        }
     }
     return false
 }
 
-export async function isAdmin(token){
-    if(token!=null){
-        const result = await axios.post(`https://soundscape-server.onrender.com/api/v1/blog/dashboard/auth`, {token: token})
-        
-        return result.status == 200
+export async function isAdmin(token) {
+    if (token != null) {
+        try {
+            const result = await axios.post(`${process.env.VUE_APP_ORIGIN_SERVER}/api/v1/blog/dashboard/auth`, { token: token })
+            return result.status == 200
+        } catch (error) {
+            return false
+        }
     }
     return false
 }

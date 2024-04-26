@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 const store = new Vuex.Store({
     state: {
         blogs: [],
-        URL_BASE: 'https://soundscape-server.onrender.com'
+        URL_BASE: process.env.VUE_APP_ORIGIN_SERVER
     },
     mutations: {
         setBlogs(state, blogs) {

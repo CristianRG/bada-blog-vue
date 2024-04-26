@@ -1,42 +1,54 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-const auth = require('../middleware/auth.js')
+const auth = require('@/middleware/auth.js')
 
 const routes = [
     {
         path: '/',
         name: 'Home',
-        component: () => import('../components/MainApp.vue')
+        component: () => import('@/components/MainApp.vue')
     },
     {
         path: '/auth',
         name: 'Login',
-        component: () => import('../components/common/LoginApp.vue')
+        component: () => import('@/components/common/LoginApp.vue')
     },
     {
         path: '/main',
         name: 'Main',
-        meta: { requireAuth: true },
-        component: () => import('../components/blog/MainBlog.vue')
+        component: () => import('@/components/blog/MainBlog.vue'),
+        children: [
+            {
+                path: 'post/:id',
+                name: 'Post',
+                component: () => import('@/components/common/PostShared.vue')
+            }
+        ]
     },
     {
         path: '/dashboard',
         name: 'Dashboard',
         meta: { requireAdmin: true },
-        component: () => import('../components/private/AdminDashboard.vue'),
+        component: () => import('@/components/private/AdminDashboard.vue'),
         children: [
+            {
+                path: '',
+                name: 'DashboardHome',
+                meta: {requireAdmin: true},
+                component: () => import('@/components/private/HomeDashboard.vue')
+            },
             {
                 path: 'posts',
                 name: 'Posts',
                 meta: { requireAdmin: true },
-                component: () => import('../components/private/AdminPosts.vue'),
+                component: () => import('@/components/private/AdminPosts.vue'),
                 props: true
             },
             {
                 path: 'analisis',
                 name: 'Analisis',
                 meta: { requireAdmin: true },
-                component: () => import('../components/private/AdminAnalits.vue'),
+                component: () => import('@/components/private/AdminAnalits.vue'),
                 props: true
             }
         ]

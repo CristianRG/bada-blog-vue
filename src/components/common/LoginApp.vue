@@ -62,17 +62,17 @@ export default {
     methods: {
         login: async function () {
             try {
-                
+                console.log(this.$store.state)
                 const result = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/login`, { email: this.emailLogin, password: this.password }, { withCredentials: true })
                 
                 if (result.status == 200) {
 
-                    this.rute = result.data.extra ? 'Dashboard' : 'Main'
+                    this.rute = result.data.extra ? '/dashboard' : '/main'
 
 
                     this.instance = this.$toast.success(result.data.message, { position: 'top', duration: 300 })
                     setTimeout(() => {
-                        this.$router.push({ name: this.rute })
+                        this.$router.push({ path: this.rute })
                     }, 400)
                 }
             } catch (error) {
