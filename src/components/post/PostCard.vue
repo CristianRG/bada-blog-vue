@@ -17,13 +17,11 @@
     </div>
 
     <!-- Interactions with the post -->
-    <ActionsPost :post="post"/>
+    <ActionsPost :post="post" @sessionCard="this.$emit('sessionCard')"/>
   </div>
 </template>
 
 <script>
-//import { getTokenFromCookie } from '@/middleware/auth'
-//import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ActionsPost from '@/components/post/ActionsPost.vue';
 export default {
   name: 'PostCard',
@@ -40,11 +38,6 @@ export default {
       showMoreComments: false,
       showInitialComment: true,
       isInSession: false
-    }
-  },
-  computed: {
-    remainingComments() {
-      return this.post.comments.slice(1)
     }
   },
   methods: {
@@ -70,7 +63,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .post {
   width: 100%;
   height: fit-content;
@@ -78,6 +71,7 @@ export default {
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
 .post-header {
@@ -130,42 +124,5 @@ export default {
   height: 200px;
   border-radius: 5px;
   margin-top: 5px;
-}
-
-.post-actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.like-btn,
-.dislike-btn,
-.comment-btn,
-.share-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #4267B2;
-  color: #fff;
-  cursor: pointer;
-  margin-left: 10px;
-  transition: background-color 0.3s ease;
-}
-
-.like-btn:hover,
-.dislike-btn:hover,
-.comment-btn:hover,
-.share-btn:hover {
-  background-color: #405d9b;
-}
-
-.post-comments {
-  margin-top: 10px;
-}
-
-.post-comment {
-  margin-top: 10px;
-  padding: 10px;
 }
 </style>

@@ -1,10 +1,14 @@
 import axios from 'axios'
+import { store } from '@/state'
 export async function isAuthenticated(token) {
     if (token != null) {
         try {
             const result = await axios.post(`${process.env.VUE_APP_ORIGIN_SERVER}/api/v1/blog/auth`, { token: token })
-
-            return result.status == 200
+            
+            if (result.data.idSession) {
+                store.commit('setIdSession', result.data.idSession)
+                return result.status == 200
+            }
         } catch (error) {
             return false
         }
@@ -16,7 +20,10 @@ export async function isAdmin(token) {
     if (token != null) {
         try {
             const result = await axios.post(`${process.env.VUE_APP_ORIGIN_SERVER}/api/v1/blog/dashboard/auth`, { token: token })
-            return result.status == 200
+            if (result.data.idSession) {
+                store.commit('setIdSession', result.data.idSession)
+                return result.status == 200
+            }
         } catch (error) {
             return false
         }

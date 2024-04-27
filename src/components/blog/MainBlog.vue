@@ -38,6 +38,7 @@ export default {
             try {
                 const token = getTokenFromCookie()
                 const response = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/auth`, {token})
+                if(response.data.idSession){this.$store.commit('setIdSession', response.data.idSession)}
                 this.isInSession = response.status == 200 ? true : false
             } catch (error) {
                 this.isInSession = false
@@ -49,7 +50,7 @@ export default {
         setTimeout(async() => {
             await this.checkSession()
             this.showSessionCard = !this.isInSession
-        }, 2000)
+        }, 1200)
     }
 }
 </script>

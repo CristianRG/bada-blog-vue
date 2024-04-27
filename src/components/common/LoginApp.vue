@@ -62,12 +62,12 @@ export default {
     methods: {
         login: async function () {
             try {
-                console.log(this.$store.state)
                 const result = await this.axios.post(`${this.$store.state.URL_BASE}/api/v1/blog/login`, { email: this.emailLogin, password: this.password }, { withCredentials: true })
                 
                 if (result.status == 200) {
 
                     this.rute = result.data.extra ? '/dashboard' : '/main'
+                    this.$store.commit('setIdSession', result.data.idSession)
 
 
                     this.instance = this.$toast.success(result.data.message, { position: 'top', duration: 300 })
